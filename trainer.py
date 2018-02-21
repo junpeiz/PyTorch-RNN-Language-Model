@@ -45,16 +45,16 @@ class MyModel(nn.Module):
 
     def init_hidden(self, batch_size):
         bidirectional = 2 if self.opt.rnn_bidir else 1
-        h = Variable(torch.zeros(bidirectional * self.opt.layer_num, batch_size, self.opt.hid_dim))
+        h = torch.zeros(bidirectional * self.opt.layer_num, batch_size, self.opt.hid_dim)
         if self.opt.rnn == 'GRU':
-            return h.cuda() if self.opt.use_cuda else h
+            return Variable(h.cuda()) if self.opt.use_cuda else Variable(h)
         else:
-            c = Variable(torch.zeros(bidirectional * self.opt.layer_num, batch_size, self.opt.hid_dim))
-            return (h.cuda(), c.cuda()) if self.opt.use_cuda else (h, c)
+            c = torch.zeros(bidirectional * self.opt.layer_num, batch_size, self.opt.hid_dim)
+            return (Variable(h.cuda()), Variable(c.cuda())) if self.opt.use_cuda else (Variable(h), Variable(c))
 
 
 def np2tensor(opt, data):
-    return Variable(torch.from_numpy(data)).cuda() if opt.use_cuda else Variable(torch.from_numpy(data))
+    return Variable(torch.from_numpy(data).cuda()) if opt.use_cuda else Variable(torch.from_numpy(data))
 
 
 def train(opt, corpus):
@@ -164,13 +164,13 @@ def generate_text(opt, corpus):
 
     dict_len = len(corpus.dictionary)
     hidden = model.init_hidden(1)
-    origin = Variable(torch.rand(1, 1).mul(dict_len).long())
-    origin = origin.cuda() if opt.use_cuda else origin
+    origin = torch.rand(1, 1).mul(dict_len).long()
+    origin = Variable(origin.cuda()) if opt.use_cuda else Variable(origin)
 
     with open(path.join(opt.save_dir, 'generate.txt'), 'w') as f:
         for i in range(opt.generate_word_num):
             predict, hidden = model(origin, hidden)
-            word_weights = predict.squeeze().data.div(opt.temperature).exp().cpu()
+            word_weights = predict.squeeze().data.div(opt.temperature).exp()
             word_idx = torch.multinomial(word_weights, 1)[0]
             origin.data.fill_(word_idx)
             word = corpus.dictionary.idx2w[word_idx]

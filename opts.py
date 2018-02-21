@@ -6,6 +6,7 @@ def get_opts():
 
     parser.add_argument('--mode', default="train", type=str, help='Change the mode train | generate')
     parser.add_argument('--seed', default=9, type=int, help='Random seed for reproduce the result')
+    parser.add_argument('--debug', default=True, type=bool, help='In debug, use small text file to generate corpus')
 
     parser.add_argument('--data_dir', default=path.join("data", "wikitext-2"), type=str,
                         help='The directory contains the data')
@@ -20,7 +21,7 @@ def get_opts():
     parser.add_argument('--layer_num', default=3, type=int, help='The number of layers of encoder RNN')
     parser.add_argument('--rnn', default='LSTM', type=str, help='The type of encoder RNN is LSTM | GRU')
     parser.add_argument('--rnn_drop', default=0.3, type=float, help='The dropout rate of encoder RNN')
-    parser.add_argument('--rnn_bidir', default=False, type=bool, help='Whether to use bidirectional RNN')
+    parser.add_argument('--rnn_bidir', default=True, type=bool, help='Whether to use bidirectional RNN')
     parser.add_argument('--bptt_len', default=15, type=int, help='The length to do Back Propagation Through Time')
     parser.add_argument('--tie_weights', default=False, type=bool,
                         help='Whether to tie the weights as described in https://arxiv.org/abs/1608.05859')

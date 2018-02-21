@@ -16,11 +16,14 @@ class Dict(object):
 
 
 class Corpus(object):
-    def __init__(self, data_dir):
+    def __init__(self, opt):
         self.dictionary = Dict()
-        self.train_data = self.tokenize(path.join(data_dir, 'train_small.txt'))
-        self.val_data = self.tokenize(path.join(data_dir, 'valid_small.txt'))
-        self.test_data = self.tokenize(path.join(data_dir, 'test_small.txt'))
+        train_file = 'train_small.txt' if opt.debug else 'train.txt'
+        val_file = 'valid_small.txt' if opt.debug else 'valid.txt'
+        test_file = 'test_small.txt' if opt.debug else 'test.txt'
+        self.train_data = self.tokenize(path.join(opt.data_dir, train_file))
+        self.val_data = self.tokenize(path.join(opt.data_dir, val_file))
+        self.test_data = self.tokenize(path.join(opt.data_dir, test_file))
 
     def tokenize(self, file_path):
         assert path.exists(file_path)
@@ -49,4 +52,4 @@ class Corpus(object):
 
 
 def get_data(opt):
-    return Corpus(opt.data_dir)
+    return Corpus(opt)
