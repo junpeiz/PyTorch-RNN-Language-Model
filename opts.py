@@ -25,11 +25,14 @@ def get_opts():
     parser.add_argument('--tie_weights', default=False, type=bool,
                         help='Whether to tie the weights as described in https://arxiv.org/abs/1608.05859')
 
-    parser.add_argument('--epoch_num', default=10, type=int, help='The number of epoch in training')
-    parser.add_argument('--eval_span', default=1, type=int, help='Plot the loss and jot down every n steps')
+    parser.add_argument('--epoch_num', default=20, type=int, help='The number of epoch in training')
+    parser.add_argument('--eval_span', default=4, type=int, help='Plot the loss and jot down every n steps')
     parser.add_argument('--print_span', default=2, type=int, help='Print info during training every n steps')
     parser.add_argument('--plot_span', default=1, type=int, help='Plot the loss and jot down every n steps')
     parser.add_argument('--checkpoint', default=5, type=int, help='Save the checkpoint of model every n steps')
+
+    parser.add_argument('--generate_word_num', default=100, type=int, help='Generate how many words')
+    parser.add_argument('--temperature', default=0.1, type=float, help='Temperature when generate the text')
 
     opt = parser.parse_args()
     return opt

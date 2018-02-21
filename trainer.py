@@ -5,7 +5,7 @@ import torch.nn as nn
 from torch import optim
 from torch.autograd import Variable
 
-from utils import make_batch, get_batch
+from utils import make_batch, get_batch, plot_loss_fig
 
 
 class MyModel(nn.Module):
@@ -102,7 +102,7 @@ def train(opt, corpus):
         if epoch % opt.eval_span == 0:
             eval_loss = evaluate(opt, valid_data, model, criterion)
             plot_eval.append(eval_loss)
-            print('-' * 30)
+            print('-' * 89)
             print("Validation: Epoch {0} (total {1} epochs) | EvaluateLoss {2}".format(epoch, opt.epoch_num, eval_loss))
 
         if epoch % opt.checkpoint == 0:
@@ -114,7 +114,13 @@ def train(opt, corpus):
                 pickle.dump(plot_eval, handle)
             print("The list for plotting training loss and eval loss saved in {0}".format(opt.save_dir))
 
-    # Todo: plot plot_eval and plot_losses
+    plot_loss_fig(opt, plot_losses, plot_eval)
+
+    # Test the performance on testing dataset
+    test_data = make_batch(corpus.test_data, opt.batch_size)
+    test_loss = evaluate(opt, test_data, model, criterion)
+    print('-' * 89)
+    print("Test: TestLoss {0}".format(test_loss))
 
     torch.save(model, path.join(opt.save_dir, 'final_model.cpt'))
     print("Training finished, the fianl model has been saved in {0}".format(opt.save_dir))
@@ -144,3 +150,30 @@ def repackage_hidden(h):
         return Variable(h.data)
     else:
         return tuple(repackage_hidden(v) for v in h)
+
+
+def generate_text(opt, corpus):
+    assert opt.temperature >= 1e-3
+
+    model = torch.load(path.join(opt.save_dir, 'final_model.cpt'))
+    model.eval()
+    if opt.use_cuda:
+        model.cuda()
+    else:
+        model.cpu()
+
+    dict_len = len(corpus.dictionary)
+    hidden = model.init_hidden(1)
+    origin = Variable(torch.rand(1, 1).mul(dict_len).long())
+    origin = origin.cuda() if opt.use_cuda else origin
+
+    with open(path.join(opt.save_dir, 'generate.txt'), 'w') as f:
+        for i in range(opt.generate_word_num):
+            predict, hidden = model(origin, hidden)
+            word_weights = predict.squeeze().data.div(opt.temperature).exp().cpu()
+            word_idx = torch.multinomial(word_weights, 1)[0]
+            origin.data.fill_(word_idx)
+            word = corpus.dictionary.idx2w[word_idx]
+
+            f.write(word + ('\n' if i % 20 == 19 else ' '))
+
