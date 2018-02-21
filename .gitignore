@@ -1,0 +1,6 @@
+__pycache__/
+log/
+data/wikitext-2/*_small.txt
+.DS_Store
+.idea/
+
