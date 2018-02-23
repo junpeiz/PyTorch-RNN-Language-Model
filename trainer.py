@@ -64,7 +64,7 @@ def train(opt, corpus):
     if opt.use_cuda:
         model.cuda()
     # Here we use summation instead of avg for the loss of each mini-batch
-    criterion = nn.CrossEntropyLoss(size_average=False)
+    criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adadelta(model.parameters(), lr=opt.init_lr)
 
     print_loss, plot_loss, plot_losses, plot_eval = 0.0, 0.0, [], []
@@ -90,12 +90,12 @@ def train(opt, corpus):
             plot_loss += loss.data[0]
 
         if epoch % opt.print_span == 0:
-            print_loss_avg = print_loss / opt.print_span / len(train_data)
+            print_loss_avg = print_loss / opt.print_span / train_data.shape[1]
             print_loss = 0.0
             print("Epoch {0} (total {1} epochs) | AvgLoss {2}".format(epoch, opt.epoch_num, print_loss_avg))
 
         if epoch % opt.plot_span == 0:
-            plot_loss_avg = plot_loss / opt.plot_span / len(train_data)
+            plot_loss_avg = plot_loss / opt.plot_span / train_data.shape[1]
             plot_losses.append(plot_loss_avg)
             plot_loss = 0.0
 
@@ -140,7 +140,7 @@ def evaluate(opt, valid_data, model, criterion):
         loss = criterion(predict, target)
         accu_loss += loss.data[0]
 
-    accu_loss /= len(valid_data)
+    accu_loss /= valid_data.shape[1]
     return accu_loss
 
 

@@ -12,7 +12,7 @@ def get_opts():
                         help='The directory contains the data')
     parser.add_argument('--save_dir', default="log", type=str, help="Where to save the model")
 
-    parser.add_argument('--batch_size', default=4, type=int, help='The batch size (first dimension of each data batch)')
+    parser.add_argument('--batch_size', default=20, type=int, help='The batch size (first dimension of each data batch)')
     parser.add_argument('--init_lr', default=0.5, type=float, help='Initial learning rate for Adadelta')
 
     parser.add_argument('--embed_dim', default=100, type=int, help='The dimension of embedding')
@@ -22,7 +22,7 @@ def get_opts():
     parser.add_argument('--rnn', default='LSTM', type=str, help='The type of encoder RNN is LSTM | GRU')
     parser.add_argument('--rnn_drop', default=0.3, type=float, help='The dropout rate of encoder RNN')
     parser.add_argument('--rnn_bidir', default=True, type=bool, help='Whether to use bidirectional RNN')
-    parser.add_argument('--bptt_len', default=15, type=int, help='The length to do Back Propagation Through Time')
+    parser.add_argument('--bptt_len', default=35, type=int, help='The length to do Back Propagation Through Time')
     parser.add_argument('--tie_weights', default=False, type=bool,
                         help='Whether to tie the weights as described in https://arxiv.org/abs/1608.05859')
 

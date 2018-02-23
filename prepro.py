@@ -33,7 +33,7 @@ class Corpus(object):
             for line in f:
                 if line.strip() == '' or line.strip()[0] == '=':
                     continue
-                tokens = line.strip().split()
+                tokens = line.strip().split() + ['<eos>']
                 count += len(tokens)
                 for token in tokens:
                     self.dictionary.add_word(token)
@@ -44,7 +44,7 @@ class Corpus(object):
             for line in f:
                 if line.strip() == '' or line.strip()[0] == '=':
                     continue
-                tokens = line.strip().split()
+                tokens = line.strip().split() + ['<eos>']
                 for token in tokens:
                     target[count] = self.dictionary.w2idx[token]
                     count += 1
