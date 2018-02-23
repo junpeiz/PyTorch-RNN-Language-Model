@@ -175,5 +175,5 @@ def generate_text(opt, corpus):
             origin.data.fill_(word_idx)
             word = corpus.dictionary.idx2w[word_idx]
 
-            f.write(word + ('\n' if i % 20 == 19 else ' '))
+            f.write('\n\n' if word == '<eos>' else word + ' ')
 
