@@ -1,12 +1,12 @@
 # Language Model with PyTorch
 
-###Requirements:
+### Requirements:
 
 `PyTorch`
 
 `matplotlib`
 
-###Train the model:
+### Train the model:
 
 `python main.py --mode train --debug false`
 
